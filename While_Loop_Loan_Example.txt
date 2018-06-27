@@ -1,0 +1,65 @@
+""" program to determine amount saved when paying extra on mtg each mo """
+
+# constants for easy change:
+
+REMAINING_PRINCIPAL = 465254 # assuming $500k for 30 years but ... 
+                        # after 5 years you see $465254 remaining due
+YR_RATE = .06     # 6%
+ORIG_PMT = 2998   # fixed monthly pmt bank ordered you to pay
+EXTRA_AMT = 250
+
+# annual amounts assuming $500k for 30 years, but after 5 years
+principal = REMAINING_PRINCIPAL   # remaining principal at the moment
+
+# convert % to monthly values:
+mo_rate = YR_RATE / 12
+
+payment = ORIG_PMT + EXTRA_AMT
+num_months = 0
+while (principal > 0):
+   # start by adding interest charge to principal:
+   principal *= (1 + mo_rate)
+
+   #  now make payment
+   principal -= payment
+   num_months += 1
+
+   # every 12 months we'll print out a balance
+   if (num_months % 12 == 0):
+      print( "Balance after", num_months,
+             "months =  $" + str(principal) )
+
+print( "You paid off the loan in", num_months, "months." )
+months_saved = 300 - num_months  # 25 years less the actual time
+amount_saved = 300 * ORIG_PMT - num_months * payment
+print( "You paid it off", months_saved, "months early." )
+print( "You saved $" + str(amount_saved) )
+
+"""  --------------------  RUN --------------------------
+
+Balance after 12 months =  $453883.94209402637
+Balance after 24 months =  $441812.60389563965
+Balance after 36 months =  $428996.73197090015
+Balance after 48 months =  $415390.40510870697
+Balance after 60 months =  $400944.8697781406
+Balance after 72 months =  $385608.3654371737
+Balance after 84 months =  $369325.93906680547
+Balance after 96 months =  $352039.24826606817
+Balance after 108 months =  $333686.35220236314
+Balance after 120 months =  $314201.48966807226
+Balance after 132 months =  $293514.8434481856
+Balance after 144 months =  $271552.29015464155
+Balance after 156 months =  $248235.1346309943
+Balance after 168 months =  $223479.82797574427
+Balance after 180 months =  $197197.66817396376
+Balance after 192 months =  $169294.48226453632
+Balance after 204 months =  $139670.28890416707
+Balance after 216 months =  $108218.94011907952
+Balance after 228 months =  $74827.7409607406
+Balance after 240 months =  $39377.04570278368
+Balance after 252 months =  $1739.8291322408268
+You paid off the loan in 253 months.
+You paid it off 47 months early.
+You saved $77656
+
+--------------------  END RUN -------------------------- """

@@ -1,0 +1,65 @@
+#function definitions -----------------------------
+
+def state_purpose():
+   """ gives an overview to user """
+   
+   instructions =                                              \
+      "\nThe following program will calculate the \n"          \
+      "monthly payment required for a loan of D dollars \n"    \
+      "over a period of Y years at an annual \n"               \
+      "interest rate of R%.\n";                          
+   print( instructions )
+
+def get_input_and_compute_payment():
+   """ get input from user, compute and print monthly payment """
+
+   # get principal
+   prompt = "\nEnter amount of the loan. (only use numbers, \n"   \
+            "please, no commas or characters like '$')\n"         \
+      "Your loan amount: "
+   mtg_principal = float( input(prompt) )
+   
+   # get interest
+   prompt = "\nNow enter the interest rate (If the quoted rate is 6.5%, \n" \
+            "for example, enter 6.5 without the %.)\n"         \
+            "Your annual interest rate: "
+   annual_int_rate = float( input(prompt) )
+
+   # get length of loan
+   prompt = "\nEnter term of the loan in years: ";
+   mtg_years = float( input(prompt) )
+   
+   # convert years to months
+   mtg_months = mtg_years * 12
+   
+   # convert rate to decimal and months
+   monthly_int_rate = annual_int_rate / (100 * 12)
+   
+   # use formula to get result
+   temp = (1 + monthly_int_rate) ** mtg_months
+   payment = mtg_principal * monthly_int_rate * temp  \
+             / ( temp - 1 )
+   return payment
+
+   
+def say_goodbye():
+   """ display a farewell message """
+
+   signoff ="\nThanks for using the Foothill Mortgage Calculator. \n" \
+             "We hope you'll come back and see us again, soon.\n\n"
+   print(signoff)
+
+# main program -----------------------------------
+
+""" program that computes and displays monthly payments for mortages  """
+
+# get user choices and compute monthly payment
+state_purpose()
+mo_pmt = get_input_and_compute_payment()
+
+# now format and display the result
+answer_string = "\nYour Monthly Payment: ${:,.2f}".format(mo_pmt)
+print( answer_string )
+
+# sign off
+say_goodbye()

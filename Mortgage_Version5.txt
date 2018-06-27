@@ -1,0 +1,338 @@
+import locale
+locale.setlocale( locale.LC_ALL, '' )
+
+#function definitions -----------------------------
+
+def state_purpose():
+   """ gives an overview to user """
+   
+   instructions =                                              \
+      "\nThe following program will calculate the \n"          \
+      "monthly payment required for a loan of D dollars \n"    \
+      "over a period of Y years at an annual \n"               \
+      "interest rate of R%.\n";                          
+   print( instructions )
+
+def get_input(the_loan = None):
+   """ get input from user; result in in MortgageData ("MD")
+       for flexibility, give client choice of passing MD
+       object or not -- if not, we instantiate for them and
+       return as functional return """
+
+   # if they aren't passing a MD object, create one here
+   if the_loan == None:
+      the_loan = MortgageData()
+   
+   # get principal
+   prompt = ("\nEnter amount of the loan. (only use numbers, no\n" \
+            "commas or characters like '$'.)\n"                    \
+            "(Valid range: {} - {})\n"                             \
+            "Your principal loan amount: ").format(MortgageData.MIN_LOAN,
+                                                   MortgageData.MAX_LOAN)
+   validated = False
+   while (not validated):
+      user_answer = float(input(prompt))
+
+      # let the mutator tell us whether user answer was valid
+      if (the_loan.set_principal(user_answer)):
+         validated = True
+      else:
+         print( "\n *** Input error. Try again ***" )
+   
+   # get interest
+   prompt = ("\nNow enter the interest rate (If 6.5%,\n" \
+             "for example, enter 6.5 without the %.)\n"  \
+             "(Valid range: {:4.2f} - {:4.2f})\n"        \
+             "Your annual rate: ").format(MortgageData.MIN_RATE,
+                                          MortgageData.MAX_RATE)
+   validated = False
+   while (not validated):
+      user_answer = float(input(prompt))
+
+      # let the mutator tell us whether user answer was valid
+      if (the_loan.set_rate(user_answer)):
+         validated = True
+      else:
+         print( "\n *** Input error. Try again ***" )
+
+   # get duration of loan
+   prompt = ("\nEnter term of the loan in years.\n"   \
+             "(Valid range: {} - {})\n"               \
+             "Your loan term: ").format(MortgageData.MIN_YRS,
+                                       MortgageData.MAX_YRS)
+   validated = False
+   while (not validated):
+      user_answer = int(input(prompt))
+
+      # let the mutator tell us whether user answer was valid
+      if (the_loan.set_years(user_answer)):
+         validated = True
+      else:
+         print( "\n *** Input error. Try again ***" )
+
+   # if they supplied an MD, we're done, but we have to return it
+   # in case they wanted us to create it for them.
+   return the_loan
+
+def compute_monthly_payment(mtg_data):
+   """ mtg_data assumed to reference a MortgageData object """
+   
+   # remember the multi-variable assignment statement
+   mtg_principal, annual_int_rate, mtg_years    \
+                  =                             \
+                  mtg_data.get_principal(),     \
+                  mtg_data.get_rate(),          \
+                  mtg_data.get_years()
+   
+   # convert years to months
+   mtg_months = mtg_years * 12
+   
+   # convert rate to decimal and months
+   monthly_int_rate = annual_int_rate / (100 * 12)
+   
+   # use formula to get result
+   temp = (1 + monthly_int_rate) ** mtg_months
+   payment = mtg_principal * monthly_int_rate * temp  \
+             / ( temp - 1 )
+
+   return payment
+
+def report_results_and_signoff(the_loan, payment):
+   """ display results and say goodbye """
+
+   print( "For the following loan ..." + str(the_loan) )
+   
+   print( "\n ... your monthly payment will be: ${:,.2f} ***".format(answer) )
+   print( "\nThanks for using the Foothill Mortgage Calculator. \n" \
+             "We hope you'll come back and see us again, soon.\n\n" )
+
+class MortgageData:
+
+   
+   # class ("static") intended constants
+   MIN_LOAN = 0
+   MAX_LOAN = 1000000
+   MIN_RATE = 0.00001
+   MAX_RATE = 25.0
+   MIN_YRS = 1
+   MAX_YRS = 100
+   MIN_STRING_LENGTH = 1
+   MAX_STRING_LENGTH = 50
+   ORIGINAL_DEFAULT_PRINC = MIN_LOAN
+   ORIGINAL_DEFAULT_RATE = MIN_RATE
+   ORIGINAL_DEFAULT_YEARS = MIN_YRS
+
+   # class attributed that will change over time
+   default_principal = ORIGINAL_DEFAULT_PRINC
+   default_rate = ORIGINAL_DEFAULT_RATE
+   default_years = ORIGINAL_DEFAULT_YEARS
+   
+   # initializer ("constructor") method -------------------------------
+   def __init__(self,
+                principal = None,
+                rate = None,
+                years = None):
+      
+      # repair mutable defaults
+      if (principal == None):
+         principal = self.default_principal
+      if (rate == None):
+         rate = self.default_rate
+      if (years == None):
+         years = self.default_years
+         
+      # instance attributes
+      if (not self.set_principal(principal)):
+         self.width = self.default_principal
+      if (not self.set_rate(rate)):
+         self.rate = self.default_rate
+      if (not self.set_years(years)):
+         self.years = self.default_years
+
+   # mutators -----------------------------------------------
+   def set_principal(self, principal):
+      if not (self.MIN_LOAN <=  principal <= self.MAX_LOAN): 
+         return False
+      # else
+      self.principal = principal
+      return True
+
+   def set_rate(self, rate):
+      if not (self.MIN_RATE <=  rate <= self.MAX_RATE): 
+         return False
+      # else
+      self.rate = rate
+      return True
+
+   def set_years(self, years):
+      if not (self.MIN_YRS <=  years <= self.MAX_YRS): 
+         return False
+      # else
+      self.years = years
+      return True
+
+   # accessors -----------------------------------------------
+   def get_principal(self):
+      return self.principal
+   def get_rate(self):
+      return self.rate
+   def get_years(self):
+      return self.years
+
+   # output method  ----------------------------------------
+   def show_me(self, client_intro_str = ""):
+      print( self.to_string(client_intro_str) )
+
+   # output method  ----------------------------------------
+   def show_me(self, client_intro_str = ""):
+      print( client_intro_str + str(self) )
+   
+   # stringizer -------------------------------
+   def __str__(self):
+      return self.to_string()
+
+   # instance helpers -------------------------------
+   def to_string(self, optional_title = " --- "):
+      if not self.valid_string(optional_title):
+          optional_title = " --- "
+
+      loan_nice = locale.currency(self.principal, grouping = True)
+                                    
+      ret_str = ( (optional_title
+                   + "\n    loan amount: {}"
+                   + "\n    annual rate: {:8.2f}%"
+                   + "\n    duration: {} years.").
+                  format(loan_nice, self.rate, self.years) )
+      return ret_str
+
+   # static and class helpers -------------------------------
+   @classmethod
+   def valid_string(cls, the_str):
+      if (type(the_str) != str
+          or
+          not
+          (cls.MIN_STRING_LENGTH <= len(the_str) <= cls.MAX_STRING_LENGTH) ):
+           return False
+      # else
+      return True
+
+   @classmethod
+   def valid_prin(cls, prin_in):
+      if (
+         (type(prin_in) != float and type(prin_in) != int)
+         or
+         not (cls.MIN_LOAN <= prin_in <= cls.MAX_LOAN)
+         ):
+         return False
+      # else
+      return True
+
+   @classmethod
+   def valid_rate(cls, rate_in):
+      if (
+         (type(rate_in) != float and type(rate_in) != int)
+         or
+         not (cls.MIN_RATE <= rate_in <= cls.MAX_RATE)
+         ):
+         return False
+      # else
+      return True
+
+   @classmethod
+   def valid_years(cls, yrs_in):
+      if (
+         type(yrs_in) != int
+         or
+         not (cls.MIN_YRS <= yrs_in <= cls.MAX_YRS)
+
+         ):
+         return False
+      # else
+      return True
+
+   # class mutators and accessors ----------------------------
+   @classmethod
+   def set_default_principal(cls, new_prin):
+      if not cls.valid_prin(new_prin): 
+         return False
+      # else
+      cls.default_principal = new_prin
+      return True
+
+   @classmethod
+   def set_default_rate(cls, new_rate):
+      if not cls.valid_rate(new_rate):
+         return False
+      # else
+      cls.default_rate = new_rate
+      return True
+
+   @classmethod
+   def set_default_years(cls, new_years):
+      if not cls.valid_years(new_years): 
+         return False
+      # else
+      cls.default_years = new_years
+      return True
+
+
+# client --------------------------------------------
+""" program that computes and displays monthly payments for mortages  """
+
+state_purpose()
+
+# one way to get input into a MD object using our new class
+loan = MortgageData()                           # instantiate defuult
+get_input(loan)                                 # let get_input() load it up
+
+# alternate way to do it (no need to instantiate loan above if use this)
+# loan = get_input()
+
+answer = compute_monthly_payment(loan)          # does the math
+report_results_and_signoff(loan, answer)        # reports to user
+
+
+""" --------------------------- RUN ---------------------------
+The following program will calculate the 
+monthly payment required for a loan of D dollars 
+over a period of Y years at an annual 
+interest rate of R%.
+
+
+Enter amount of the loan. (only use numbers, no
+commas or characters like '$'.)
+(Valid range: 0 - 1000000)
+Your principal loan amount: 240000
+
+Now enter the interest rate (If 6.5%,
+for example, enter 6.5 without the %.)
+(Valid range: 0.00 - 25.00)
+Your annual rate: 99
+
+ *** Input error. Try again ***
+
+Now enter the interest rate (If 6.5%,
+for example, enter 6.5 without the %.)
+(Valid range: 0.00 - 25.00)
+Your annual rate: 2.4
+
+Enter term of the loan in years.
+(Valid range: 1 - 100)
+Your loan term: 700
+
+ *** Input error. Try again ***
+
+Enter term of the loan in years.
+(Valid range: 1 - 100)
+Your loan term: 24
+For the following loan ...
+    loan amount: $240,000.00
+    annual rate:     2.40%
+    duration: 24 years.
+None
+
+ ... your monthly payment will be: $1,097.06 ***
+
+Thanks for using the Foothill Mortgage Calculator. 
+We hope you'll come back and see us again, soon.
+------------------------------------------------------------ """

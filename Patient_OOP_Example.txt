@@ -1,0 +1,228 @@
+class Patient:
+   """ oop project development - phase 4 (sythesis) """
+   
+   # class ("static") intended constants
+   ORIGINAL_DEFAULT_NAME = "(no name)"
+   ORIGINAL_DEFAULT_ID = 0
+   ORIGINAL_DEFAULT_TEMPERATURE = 98.6
+
+   MIN_STRING_LENGTH = 2
+   MAX_STRING_LENGTH = 40
+   MIN_ID = 0
+   MAX_ID = 9999
+   MIN_TEMP = 88.
+   MAX_TEMP = 111.
+   ALARM_TEMP = 103.5
+
+   # class attributes that will change over time
+   default_name = ORIGINAL_DEFAULT_NAME
+   default_id = ORIGINAL_DEFAULT_ID
+   default_temperature = ORIGINAL_DEFAULT_TEMPERATURE
+   
+   # initializer ("constructor") method -------------------------------
+   def __init__(self,
+                name = None,
+                id = None,
+                temperature = None):
+      # repair mutable defaults
+      if (name == None):
+         name = self.default_name
+      if (temperature == None):
+         temperature = self.default_temperature
+      if (id == None):
+         id = self.default_id
+         
+      # instance attributes
+      if (not self.set_name(name)):
+         self.name = self.default_name
+      if (not self.set_id(id)):
+         self.id = self.default_id
+      if (not self.set_temperature(temperature)):
+         self.temperature = self.default_temperature
+
+   # mutators -----------------------------------------------
+   def set_name(self, name):
+      if not self.valid_string(name):
+         return False
+      # else
+      self.name = name
+      return True
+
+   def set_id(self, id):
+      if not self.valid_id(id): 
+         return False
+      # else
+      self.id = id
+      return True
+
+   def set_temperature(self, temperature):
+      if not self.valid_temp(temperature): 
+         return False
+      # else
+      self.temperature = temperature
+      return True
+   
+   # accessors -----------------------------------------------
+   def get_name(self):
+      return self.name
+   def get_id(self):
+      return self.id
+   def get_temperature(self):
+      return self.temperature
+
+   # output method  ----------------------------------------
+   def display(self, client_intro_str = "--- PATIENT DATA ---"):
+      print( self.to_string(client_intro_str) )
+
+ # instance helpers -------------------------------
+   def to_string(self, optional_title = " ---------- "):
+      if not self.valid_string(optional_title):
+          optional_title = " ---------- "
+      ret_str = ( (optional_title
+                   + "\n    name: {}"
+                   + "\n      id: {}"
+                   + "\n    temp: {}(F).").
+                  format(self.name, self.id, self.temperature) )
+      if (self.temperature >= self.ALARM_TEMP):
+         ret_str += "\n    *** urgent: attend immediately ***"
+      return ret_str
+
+   # static and class helpers -------------------------------
+   @classmethod
+   def valid_id(cls, id_to_test):
+      if (
+         type(id_to_test) != int 
+         or
+         not (cls.MIN_ID <= id_to_test <= cls.MAX_ID)
+         ):
+         return False
+      # else
+      return True
+
+   @classmethod
+   def valid_temp(cls, temp_to_test):
+      if (
+         (type(temp_to_test) != float and type(temp_to_test) != int)
+         or
+         not (cls.MIN_TEMP <= temp_to_test <= cls.MAX_TEMP)
+         ):
+         return False
+      # else
+      return True
+
+   @classmethod
+   def valid_string(cls, string_to_test):
+      if (type(string_to_test) != str
+          or
+          not (cls.MIN_STRING_LENGTH <= len(string_to_test)
+                                     <= cls.MAX_STRING_LENGTH)
+          ):
+          return False
+      # else
+      return True
+
+   # class mutators and accessors ----------------------------
+   @classmethod
+   def set_default_id(cls, new_dflt_id):
+      if not cls.valid_id(new_dflt_id): 
+         return False
+      # else
+      cls.default_id = new_dflt_id
+      return True
+
+   @classmethod
+   def set_default_temp(cls, new_dflt_temp):
+      if not cls.valid_temp(new_dflt_temp): 
+         return False
+      # else
+      cls.default_temp = new_dflt_temp
+      return True
+
+   @classmethod
+   def set_default_name(cls, new_dflt_name):
+      if not cls.valid_string(new_dflt_name): 
+         return False
+      # else
+      cls.default_name = new_dflt_name
+      return True
+
+   @classmethod
+   def get_default_id(cls):
+      return cls.default_id
+
+   @classmethod
+   def get_default_temp(cls):
+      return cls.default_temp
+
+   @classmethod
+   def get_default_name(cls):
+      return cls.default_name
+
+# main functions ------------------------------------
+
+def get_patient_id():
+   # get the answer in the form of a string, then convert to int
+   string_in = input( "What's the patient's id #? " )
+
+   # convert string str to an int
+   id = int(string_in)
+   return id
+
+def get_patient_name():
+   # get the answer in the form of a string, then convert to int
+   string_in = input( "What's the patient's name? " )
+   return string_in
+
+def get_patient_temp():
+   # get the answer in the form of a string, then convert to int
+   string_in = input( "What's the patient's temperature? " )
+
+   # convert string str to an float
+   temp = float(string_in)
+   return temp
+
+# client --------------------------------------------
+
+# instantiate two Patients
+person1 = Patient()
+person2 = Patient()
+
+# get the info for patient #1:
+print(  "\nPatient #1 ---")
+user_id = get_patient_id()
+user_name = get_patient_name()
+user_temp = get_patient_temp()
+
+# set patient #1
+if ( not person1.set_name(user_name) ):
+   print( "Error in patient name: Invalid length." )
+if ( not person1.set_id(user_id) ):
+   print( "Error in patient id: not int or out-of-range." )
+if ( not person1.set_temperature(user_temp) ):
+   print( "Error in patient id: not float or out-of-range." )
+
+# get the info for patient #2:
+print(  "\nPatient #2 ---")
+user_id = get_patient_id()
+user_name = get_patient_name()
+user_temp = get_patient_temp()
+
+# set patient #2
+if ( not person2.set_name(user_name) ):
+   print( "Error in patient name: Invalid length." )
+if ( not person2.set_id(user_id) ):
+   print( "Error in patient id: not int or out-of-range." )
+if ( not person2.set_temperature(user_temp) ):
+   print( "Error in patient id: not float or out-of-range." )
+
+# find the more urgent patient
+if person1.get_temperature() > person2.get_temperature():
+   first = person1
+   second = person2
+else:
+   first = person2
+   second = person1
+   
+# display results
+first.display("Patient with higher temperature:")
+second.display("Patient with lower temperature:") 

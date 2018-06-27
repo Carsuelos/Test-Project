@@ -1,0 +1,37 @@
+CS3A Assignment 1 (By Carlos Omar Ramirez)
+
+--------SOURCE------------
+print("Hello World!\n")
+print("My family name is Ramirez.\n")
+print("My random 8-digit number is 88552200\n")
+print("Syllabus detail #1: To succeed in the course, one will need a hunger for learning, be able to commit a "
+      + "considerable amount of time, as well as a positive attitude.\n")
+print("Syllabus detail #2: Buying a textbook is not required, as all concepts will be covered in the modules.\n")
+print("Lab Homework Requirements detail #1: One should use descriptive names for variables, not "
+      + "cryptic or single letter names.\n")
+print("Lab Homework Requirements detail #2: Unless one wants to lose points, they should only use material "
+      + "covered in this class.\n")
+print("Lab Homework Requirements detail #3: One should use the discussion board to ask questions " 
+      + "if they are unsure about specific parts of the assignment.\n\n")
+
+--------OUTPUT------------
+== RESTART: C:/Users/Carsuelos/Desktop/Python Projects/Test/Hello_World.py ==
+Hello World!
+
+My family name is Ramirez.
+
+My random 8-digit number is 88552200
+
+Syllabus detail #1: To succeed in the course, one will need a hunger for learning, be able to commit a considerable amount of time, as well as a positive attitude.
+
+Syllabus detail #2: Buying a textbook is not required, as all concepts will be covered in the modules.
+
+Lab Homework Requirements detail #1: One should use descriptive names for variables, not cryptic or single letter names.
+
+Lab Homework Requirements detail #2: Unless one wants to lose points, they should only use material covered in this class.
+
+Lab Homework Requirements detail #3: One should use the discussion board to ask questions if they are unsure about specific parts of the assignment.
+
+
+>>> 
+--------------------------

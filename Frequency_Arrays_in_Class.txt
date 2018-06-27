@@ -1,0 +1,68 @@
+# beginning of class Frequency definition -------------------------
+class Frequency:
+   
+   # class ("static") members and intended constants
+   MAX_SIZE =  100000
+   DEFAULT_SIZE = 26
+   ERROR_RETURN_FREQ = -1
+
+   # initializer ("constructor") method -------------------
+   def __init__(self, size = DEFAULT_SIZE):
+      
+      # instance attributes
+      if (not self.set_size(size)):
+         self.size = Frequency.DEFAULT_SIZE
+
+      # initialize an array of size frequencies, all to 0
+      self.clear()
+
+   # mutators -------------------------------
+   def set_size(self, size):
+      if not self.valid_size(size):
+         return False
+      
+      # else
+      self.size = size
+      # and re-initialize an array of new size frequencies, all to 0
+      self.clear()
+      return True
+
+   def increment(self, index):
+      if (not (0 <= index < self.size)):
+         return False
+      #else
+      self.count[index] += 1
+      return True
+
+   def decrement(self, index):
+      if not (
+               (0 <= index < self.size)
+               and
+               (self.count[index] > 0)
+             ):
+         return False
+      #else
+      self.count[index] -= 1
+      return True
+
+   def clear(self):
+      """ set all frequencies to 0 """
+      self.count = [0 for k in range(self.size)]
+   
+   # accessors -------------------------------
+   def get_size(self):
+      return self.size
+
+   def get(self, index):
+      if (not (0 <= index < self.size)):
+         return self.ERROR_RETURN_FREQ      
+      # else
+      return self.count[index]
+
+   # static/class methods ------------------------
+   @classmethod     
+   def valid_size(cls, test_size):
+      if not (0 <= test_size <= cls.MAX_SIZE):
+         return False
+      else:
+         return True
